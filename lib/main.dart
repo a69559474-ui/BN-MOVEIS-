@@ -250,12 +250,16 @@ class _AnimeAutoTabState extends State<AnimeAutoTab> {
       itemCount: animeList.length,
       itemBuilder: (context, index) {
         final anime = animeList[index];
+        final String title = anime['title'] ?? 'Anime';
+        final String imgUrl = anime['images']['jpg']['image_url'] ?? '';
         return InkWell(
-          onTap: () => launchUrl(Uri.parse("https://google.com{Uri.encodeComponent("${anime['title']} مترجم الحلقة 1")}"), mode: LaunchMode.externalApplication),
+          onTap: () {
+            final searchUrl = Uri.parse('https://google.com{Uri.encodeComponent('$title مترجم الحلقة 1')}');
+            launchUrl(searchUrl, mode: LaunchMode.externalApplication);
+          },
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Stack(
               fit: StackFit.expand,
-              children: [
-                Image.network(anime['images']['jpg']['image_url'], fit: BoxFit.cover),
+
 
