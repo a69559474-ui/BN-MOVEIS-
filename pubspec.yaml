@@ -1,8 +1,7 @@
-
 name: bn_moveis
 description: BN MOVEIS App
 publish_to: 'none'
-version: 3.0.0+1
+version: 3.1.0+1
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
@@ -12,6 +11,8 @@ dependencies:
     sdk: flutter
   url_launcher: any
   http: any
+  video_player: any
+  chewie: any
 
 dev_dependencies:
   flutter_launcher_icons: any
@@ -23,4 +24,5 @@ flutter_launcher_icons:
 
 flutter:
   uses-material-design: true
+
 
