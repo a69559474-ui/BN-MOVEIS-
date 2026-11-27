@@ -17,12 +17,12 @@ jobs:
         with:
           channel: 'stable'
       - run: |
-          sudo apt-get update && sudo apt-get install -y imagemagick
+          sudo apt-get update && sudo apt-get install -y imagemagick fonts-dejavu-core
           flutter create temp_app --project-name bn_moveis --org com.bn
           cp pubspec.yaml temp_app/pubspec.yaml
           cp -r lib/* temp_app/lib/
           cd temp_app
-          convert -size 512x512 xc:"#0A2472" -fill "#E50914" -draw "roundrectangle 20,20 492,492 90,90" -fill "#0A2472" -draw "roundrectangle 35,35 477,477 80,80" -fill "#E50914" -gravity center -pointsize 190 -annotate +0-30 "BN" -fill "#E50914" -pointsize 55 -annotate +0+110 "MOVEIS" logo.png
+          convert -size 512x512 xc:"#4DA8DA" -fill "#8B0000" -draw "roundrectangle 20,20 492,492 90,90" -fill "#4DA8DA" -draw "roundrectangle 35,35 477,477 80,80" -font "DejaVu-Sans-Bold" -fill "#8B0000" -gravity center -pointsize 200 -annotate +0-35 "BN" -pointsize 58 -annotate +0+115 "MOVEIS" logo.png
           flutter pub get
           dart run flutter_launcher_icons
           flutter build apk --release --no-tree-shake-icons
