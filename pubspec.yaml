@@ -1,4 +1,3 @@
-
 name: bn_moveis
 description: تطبيق BN MOVEIS للأفلام والمسلسلات والأنمي والقنوات الرياضية.
 publish_to: 'none'
@@ -17,3 +16,4 @@ dependencies:
 
 flutter:
   uses-material-design: true
+
