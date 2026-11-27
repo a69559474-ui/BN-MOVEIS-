@@ -40,13 +40,13 @@ class _ActivationScreenState extends State<ActivationScreen> {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('كود التفعيل غير صحيح! تواصل معنا للاشتراك.'), backgroundColor: Color(0xFFE50914)),
+        const SnackBar(content: Text('\u0643\u0648\u062f \u0627\u0644\u062a\u0641\u0639\u064a\u0644 \u063a\u064a\u0631 \u0635\u062d\u064a\u062d'), backgroundColor: Color(0xFFE50914)),
       );
     }
   }
 
   Future<void> _openWhatsApp() async {
-    final Uri url = Uri.https('wa.me', '/$_whatsappNumber', {'text': 'السلام عليكم، أريد الاشتراك في تطبيق BN MOVEIS وتفعيل حسابي'});
+    final Uri url = Uri.https('wa.me', '/$_whatsappNumber', {'text': 'BN MOVEIS Subscription'});
     await launchUrl(url, mode: LaunchMode.externalApplication);
   }
 
@@ -61,13 +61,13 @@ class _ActivationScreenState extends State<ActivationScreen> {
               const Icon(Icons.play_circle_filled, size: 90, color: Color(0xFFE50914)),
               const SizedBox(height: 12),
               const Text('BN MOVEIS', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, letterSpacing: 2)),
-              const Text('أفلام • مسلسلات • أنمي • قنوات رياضية', style: TextStyle(fontSize: 13, color: Colors.grey)),
+              const Text('\u0623\u0641\u0644\u0627\u0645 \u2022 \u0645\u0633\u0644\u0633\u0644\u0627\u062a \u2022 \u0623\u0646\u0645\u064a \u2022 \u0631\u064a\u0627\u0636\u0629', style: TextStyle(fontSize: 13, color: Colors.grey)),
               const SizedBox(height: 30),
               TextField(
                 controller: _codeController,
                 textAlign: TextAlign.center,
                 decoration: InputDecoration(
-                  hintText: 'أدخل كود التفعيل هنا',
+                  hintText: '\u0623\u062f\u062e\u0644 \u0643\u0648\u062f \u0627\u0644\u062a\u0641\u0639\u064a\u0644 \u0647\u0646\u0627',
                   filled: true,
                   fillColor: const Color(0xFF1F1F1F),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
@@ -80,7 +80,7 @@ class _ActivationScreenState extends State<ActivationScreen> {
                 child: ElevatedButton(
                   onPressed: _verifyCode,
                   style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE50914)),
-                  child: const Text('دخول وتفعيل الحساب', style: TextStyle(fontSize: 18, color: Colors.white)),
+                  child: const Text('\u062f\u062e\u0648\u0644 \u0648\u062a\u0641\u0639\u064a\u0644 \u0627\u0644\u062d\u0633\u0627\u0628', style: TextStyle(fontSize: 18, color: Colors.white)),
                 ),
               ),
               const SizedBox(height: 30),
@@ -89,10 +89,10 @@ class _ActivationScreenState extends State<ActivationScreen> {
                 decoration: BoxDecoration(color: const Color(0xFF1A1A1A), borderRadius: BorderRadius.circular(12)),
                 child: Column(
                   children: [
-                    const Text('طرق الدفع في اليمن 🇾🇪', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.amber)),
+                    const Text('\u0637\u0631\u0642 \u0627\u0644\u062f\u0641\u0639 \u0641\u064a \u0627\u0644\u064a\u0645\u0646', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.amber)),
                     const SizedBox(height: 8),
                     const Text(
-                      'حوّل قيمة الاشتراك عبر (الكريمي، النجم، العمقي، المحضار، أو محفظة كاش)، ثم أرسل السند عبر الواتساب لاستلام كود التفعيل فوراً.',
+                      '\u062d\u0648\u0644 \u0642\u064a\u0645\u0629 \u0627\u0644\u0627\u0634\u062a\u0631\u0627\u0643 \u0639\u0628\u0631 \u0627\u0644\u0643\u0631\u064a\u0645\u064a \u0623\u0648 \u0627\u0644\u0646\u062c\u0645 \u0623\u0648 \u0627\u0644\u0639\u0645\u0642\u064a \u0623\u0648 \u0645\u062d\u0641\u0638\u0629 \u0643\u0627\u0634 \u062b\u0645 \u0623\u0631\u0633\u0644 \u0627\u0644\u0633\u0646\u062f \u0644\u0627\u0633\u062a\u0644\u0627\u0645 \u0627\u0644\u0643\u0648\u062f',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 13, color: Colors.white70),
                     ),
@@ -103,7 +103,7 @@ class _ActivationScreenState extends State<ActivationScreen> {
                       child: ElevatedButton.icon(
                         onPressed: _openWhatsApp,
                         icon: const Icon(Icons.chat, color: Colors.white),
-                        label: const Text('اطلب الكود عبر الواتساب', style: TextStyle(fontSize: 16, color: Colors.white)),
+                        label: const Text('\u0627\u0637\u0644\u0628 \u0627\u0644\u0643\u0648\u062f \u0639\u0628\u0631 \u0627\u0644\u0648\u0627\u062a\u0633\u0627\u0628', style: TextStyle(fontSize: 16, color: Colors.white)),
                         style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF25D366)),
                       ),
                     ),
@@ -141,9 +141,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           controller: _tabController,
           indicatorColor: const Color(0xFFE50914),
           tabs: const [
-            Tab(icon: Icon(Icons.live_tv), text: 'قنوات رياضية'),
-            Tab(icon: Icon(Icons.animation), text: 'أنمي متجدد'),
-            Tab(icon: Icon(Icons.movie), text: 'أفلام ومسلسلات'),
+            Tab(icon: Icon(Icons.live_tv), text: '\u0642\u0646\u0648\u0627\u062a \u0631\u064a\u0627\u0636\u064a\u0629'),
+            Tab(icon: Icon(Icons.animation), text: '\u0623\u0646\u0645\u064a \u0645\u062a\u062c\u062f\u062f'),
+            Tab(icon: Icon(Icons.movie), text: '\u0623\u0641\u0644\u0627\u0645 \u0648\u0645\u0633\u0644\u0633\u0644\u0627\u062a'),
           ],
         ),
       ),
@@ -243,25 +243,7 @@ class _AnimeAutoTabState extends State<AnimeAutoTab> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) return const Center(child: CircularProgressIndicator(color: Color(0xFFE50914)));
-    return GridView.builder(
-      padding: const EdgeInsets.all(10),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 0.62, crossAxisSpacing: 8, mainAxisSpacing: 8),
-      itemCount: animeList.length,
-      itemBuilder: (context, index) {
-        final anime = animeList[index];
-        final String title = anime['title'] ?? 'Anime';
-        final String imgUrl = anime['images']['jpg']['image_url'] ?? '';
-        return InkWell(
-          onTap: () {
-            final searchUrl = Uri.https('://google.com', '/search', {'q': '$title مترجم الحلقة 1'});
-            launchUrl(searchUrl, mode: LaunchMode.externalApplication);
-          },
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
+
 
 
 
