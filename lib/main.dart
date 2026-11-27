@@ -46,7 +46,7 @@ class _ActivationScreenState extends State<ActivationScreen> {
   }
 
   Future<void> _openWhatsApp() async {
-    final Uri url = Uri.parse("https://wa.me عليكم، أريد الاشتراك في تطبيق BN MOVEIS وتفعيل حسابي");
+    final Uri url = Uri.https('wa.me', '/$_whatsappNumber', {'text': 'السلام عليكم، أريد الاشتراك في تطبيق BN MOVEIS وتفعيل حسابي'});
     await launchUrl(url, mode: LaunchMode.externalApplication);
   }
 
@@ -254,12 +254,14 @@ class _AnimeAutoTabState extends State<AnimeAutoTab> {
         final String imgUrl = anime['images']['jpg']['image_url'] ?? '';
         return InkWell(
           onTap: () {
-            final searchUrl = Uri.parse('https://google.com{Uri.encodeComponent('$title مترجم الحلقة 1')}');
+            final searchUrl = Uri.https('://google.com', '/search', {'q': '$title مترجم الحلقة 1'});
             launchUrl(searchUrl, mode: LaunchMode.externalApplication);
           },
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Stack(
               fit: StackFit.expand,
+              children: [
+
 
 
