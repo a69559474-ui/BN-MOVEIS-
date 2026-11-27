@@ -1,9 +1,7 @@
-
-
 name: bn_moveis
-description: تطبيق BN MOVEIS للأفلام والمسلسلات والأنمي والقنوات الرياضية.
+description: BN MOVEIS App
 publish_to: 'none'
-version: 2.0.0+1
+version: 2.1.0+1
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
@@ -12,9 +10,15 @@ dependencies:
   flutter:
     sdk: flutter
   url_launcher: any
-  video_player: any
-  chewie: any
-  http: any
+
+dev_dependencies:
+  flutter_launcher_icons: any
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "logo.png"
 
 flutter:
   uses-material-design: true
+
