@@ -28,7 +28,7 @@ class _NetflixHomeState extends State<NetflixHome> {
   Future<void> _load() async {
     try {
       final gh = ['raw', 'githubusercontent', 'com'].join('.');
-      final rMy = await http.get(Uri.https(gh, '/a69559474-ui/BN-MOVEIS-/main/channels.txt'));
+      final rMy = await http.get(Uri.https(gh, '/a69559474-ui/BN-MOVEIS-/main/channels.txt')).timeout(const Duration(seconds: 3));
       if (rMy.statusCode == 200) {
         for (var line in rMy.body.split('\n')) {
           if (line.contains('|')) {
@@ -37,20 +37,26 @@ class _NetflixHomeState extends State<NetflixHome> {
           }
         }
       }
+    } catch (_) {}
 
+    try {
       final h1 = ['api', 'tvmaze', 'com'].join('.');
-      final r1 = await http.get(Uri.https(h1, '/shows'));
+      final r1 = await http.get(Uri.https(h1, '/shows')).timeout(const Duration(seconds: 5));
       if (r1.statusCode == 200) allShows = json.decode(r1.body) as List;
+    } catch (_) {}
 
+    try {
       final h2 = ['api', 'jikan', 'moe'].join('.');
-      final r2 = await http.get(Uri.https(h2, '/v4/top/anime', {'limit': '25'}));
+      final r2 = await http.get(Uri.https(h2, '/v4/top/anime', {'limit': '25'})).timeout(const Duration(seconds: 5));
       if (r2.statusCode == 200) {
         final decoded = json.decode(r2.body) as Map;
         if (decoded.containsKey('data')) animeList = decoded.values.last as List;
       }
+    } catch (_) {}
 
+    try {
       final h3 = ['iptv-org', 'github', 'io'].join('.');
-      final r3 = await http.get(Uri.https(h3, '/iptv/languages/ara.m3u'));
+      final r3 = await http.get(Uri.https(h3, '/iptv/languages/ara.m3u')).timeout(const Duration(seconds: 5));
       if (r3.statusCode == 200) {
         final lines = r3.body.split('\n');
         for (int i = 0; i < lines.length && channels.length < 40; i++) {
@@ -61,6 +67,7 @@ class _NetflixHomeState extends State<NetflixHome> {
         }
       }
     } catch (_) {}
+
     if (mounted) setState(() => loading = false);
   }
 
@@ -189,7 +196,6 @@ class _NetflixHomeState extends State<NetflixHome> {
 
   Widget _sec(String t) => Padding(padding: const EdgeInsets.fromLTRB(12, 14, 12, 6), child: Text(t, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)));
 }
-
 
 
 
