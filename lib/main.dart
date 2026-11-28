@@ -44,8 +44,9 @@ class _LockScreenState extends State<LockScreen> {
     if (input.isEmpty) return;
     setState(() => checking = true);
     try {
-      final link = 'https://' + '://githubusercontent.com';
-      final res = await http.get(Uri.parse(link));
+      final host = ['raw', 'githubusercontent', 'com'].join('.');
+      final url = Uri.https(host, '/a69559474-ui/BN-MOVEIS-/main/codes.txt');
+      final res = await http.get(url);
       if (res.statusCode == 200) {
         final lines = res.body.split('\n');
         for (var line in lines) {
@@ -130,6 +131,7 @@ class _LockScreenState extends State<LockScreen> {
     );
   }
 }
+
 
 
 
