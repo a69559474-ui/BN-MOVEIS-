@@ -1,36 +1,43 @@
-name: Build BN MOVEIS APK
+
+name: Build BN MOVIES APK
 
 on:
+  workflow_dispatch:
   push:
-    branches: [ main ]
+    branches:
+      - main
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
-      - uses: subosito/flutter-action@v2
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
         with:
-          channel: 'stable'
-      - run: |
-          sudo apt-get update && sudo apt-get install -y imagemagick fonts-dejavu-core
-          flutter create temp_app --project-name bn_moveis --org com.bn
-          cp pubspec.yaml temp_app/pubspec.yaml
-          cp -r lib/* temp_app/lib/
-          awk '/<manifest/{print;print "    <uses-permission android:name=\"android.permission.INTERNET\"/>";next}1' temp_app/android/app/src/main/AndroidManifest.xml > temp_manifest.xml && mv temp_manifest.xml temp_app/android/app/src/main/AndroidManifest.xml
-          cd temp_app
-          convert -size 512x512 xc:"#000000" -font "DejaVu-Sans-Bold" -fill "#E50914" -gravity center -pointsize 230 -annotate +0-35 "BN" -wave -8x512 -gravity center -fill "#FFFFFF" -pointsize 42 -annotate +0+125 "MOVEIS" logo.png
-          flutter pub get
-          dart run flutter_launcher_icons
-          flutter build apk --release --no-tree-shake-icons
-      - uses: actions/upload-artifact@v4
+          gradle-version: '8.9'
+
+      - name: Build APK
+        run: gradle --no-daemon assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
-          name: BN-MOVEIS-APK
-          path: temp_app/build/app/outputs/flutter-apk/app-release.apk
+          name: BN-MOVIES-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
+
 
 
 
