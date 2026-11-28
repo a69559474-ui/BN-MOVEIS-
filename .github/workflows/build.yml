@@ -1,5 +1,5 @@
 
-name: Build BN MOVIES APK
+name: BN MOVIES Android APK
 
 on:
   workflow_dispatch:
@@ -15,25 +15,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Download project
         uses: actions/checkout@v4
 
-      - name: Setup Java
+      - name: Install Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Build APK
+      - name: Install Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Check project files
         run: |
-          gradle --version
-          gradle --no-daemon assembleDebug
+          ls -la
+          ls -la app
+          test -f settings.gradle.kts
+          test -f build.gradle.kts
+          test -f app/build.gradle.kts
+          test -f app/src/main/AndroidManifest.xml
+          test -f app/src/main/java/com/bnmovies/app/MainActivity.kt
+
+      - name: Build Android APK
+        run: gradle --no-daemon clean assembleDebug
+
+      - name: Verify APK
+        run: |
+          test -f app/build/outputs/apk/debug/app-debug.apk
+          ls -lh app/build/outputs/apk/debug/app-debug.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: BN-MOVIES-APK
           path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
 
 
 
