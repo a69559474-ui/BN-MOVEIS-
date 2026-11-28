@@ -170,12 +170,11 @@ class _NetflixHomeState extends State<NetflixHome> {
           _title('\u0642\u0646\u0648\u0627\u062a \u0627\u0644\u0631\u064a\u0627\u0636\u0629 \u0627\u0644\u0645\u0628\u0627\u0634\u0631\u0629'),
           SizedBox(
             height: 110,
-            child: ListView.builder(
+            child: ListView(
               scrollDirection: Axis.horizontal,
               reverse: true,
-              itemCount: channels.length,
-              itemBuilder: (_, i) => GestureDetector(
-                onTap: () => _playChannel(channels[i]['name']!, channels[i]['url']!),
+              children: channels.map((ch) => GestureDetector(
+                onTap: () => _playChannel(ch['name']!, ch['url']!),
                 child: Container(
                   width: 90,
                   margin: const EdgeInsets.symmetric(horizontal: 6),
@@ -188,22 +187,20 @@ class _NetflixHomeState extends State<NetflixHome> {
                         child: const Icon(Icons.sports_soccer, color: Colors.white),
                       ),
                       const SizedBox(height: 5),
-                      Text(channels[i]['name']!, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.white, fontSize: 11)),
+                      Text(ch['name']!, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.white, fontSize: 11)),
                     ],
                   ),
                 ),
-              ),
+              )).toList(),
             ),
           ),
           _title('\u0623\u062d\u062f\u062b \u0627\u0644\u0645\u0633\u0644\u0633\u0644\u0627\u062a \u0627\u0644\u0639\u0627\u0644\u0645\u064a\u0629'),
           SizedBox(
             height: 185,
-            child: ListView.builder(
+            child: ListView(
               scrollDirection: Axis.horizontal,
               reverse: true,
-              itemCount: seriesList.length,
-              itemBuilder: (_, i) {
-                final show = seriesList[i];
+              children: seriesList.map((show) {
                 final img = show['image'] != null ? show['image']['medium'] : '';
                 if (img.isEmpty) return const SizedBox();
                 return GestureDetector(
@@ -215,13 +212,17 @@ class _NetflixHomeState extends State<NetflixHome> {
                     child: ClipRRect(borderRadius: BorderRadius.circular(6), child: Image.network(img, fit: BoxFit.cover)),
                   ),
                 );
-              },
+              }).toList(),
             ),
           ),
           _title('\u0623\u062d\u062f\u062b \u0627\u0644\u0623\u0641\u0644\u0627\u0645'),
           SizedBox(
             height: 185,
-            child: ListView.builder(
+            child: ListView(
               scrollDirection: Axis.horizontal,
               reverse: true,
+              children: moviesList.map((item) {
+                final img = item['images']['jpg']['image_url'];
+                return GestureDetector(
+
 
