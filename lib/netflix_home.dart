@@ -64,13 +64,13 @@ class _NetflixHomeState extends State<NetflixHome> {
                   Stack(
                     alignment: Alignment.bottomCenter,
                     children: [
-                      Image.network(movies['img']!, height: 350, width: double.infinity, fit: BoxFit.cover),
+                      Image.network(movies[0]['img']!, height: 350, width: double.infinity, fit: BoxFit.cover),
                       Container(height: 350, decoration: const BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black]))),
                       Padding(
                         padding: const EdgeInsets.all(16),
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Colors.black),
-                          onPressed: () => _play(movies['title']!, movies['url']!),
+                          onPressed: () => _play(movies[0]['title']!, movies[0]['url']!),
                           icon: const Icon(Icons.play_arrow),
                           label: const Text('\u062a\u0634\u063a\u064a\u0644 \u0627\u0644\u0639\u0631\u0636 \u0627\u0644\u0645\u0645\u064a\u0632', style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
@@ -132,7 +132,7 @@ class _NetflixHomeState extends State<NetflixHome> {
                       itemBuilder: (_, i) {
                         final item = animeList[i];
                         return GestureDetector(
-                          onTap: () => _play(item['title'] ?? 'Anime', movies['url']!),
+                          onTap: () => _play(item['title'] ?? 'Anime', movies[0]['url']!),
                           child: Container(
                             width: 120,
                             margin: const EdgeInsets.symmetric(horizontal: 6),
