@@ -12,7 +12,8 @@ class NetflixHome extends StatefulWidget {
 
 class _NetflixHomeState extends State<NetflixHome> {
   int _tab = 0;
-  List shows = [];
+  List allShows = [];
+  List animeList = [];
   List<Map<String, String>> channels = [];
   List<Map<String, String>> favs = [];
   String q = '';
@@ -26,14 +27,33 @@ class _NetflixHomeState extends State<NetflixHome> {
 
   Future<void> _load() async {
     try {
+      final gh = ['raw', 'githubusercontent', 'com'].join('.');
+      final rMy = await http.get(Uri.https(gh, '/a69559474-ui/BN-MOVEIS-/main/channels.txt'));
+      if (rMy.statusCode == 200) {
+        for (var line in rMy.body.split('\n')) {
+          if (line.contains('|')) {
+            final p = line.split('|');
+            channels.add({'n': p.first.trim(), 'u': p.last.trim()});
+          }
+        }
+      }
+
       final h1 = ['api', 'tvmaze', 'com'].join('.');
       final r1 = await http.get(Uri.https(h1, '/shows'));
-      if (r1.statusCode == 200) shows = (json.decode(r1.body) as List).take(25).toList();
-      final h2 = ['iptv-org', 'github', 'io'].join('.');
-      final r2 = await http.get(Uri.https(h2, '/iptv/categories/sports.m3u'));
+      if (r1.statusCode == 200) allShows = json.decode(r1.body) as List;
+
+      final h2 = ['api', 'jikan', 'moe'].join('.');
+      final r2 = await http.get(Uri.https(h2, '/v4/top/anime', {'limit': '25'}));
       if (r2.statusCode == 200) {
-        final lines = r2.body.split('\n');
-        for (int i = 0; i < lines.length && channels.length < 25; i++) {
+        final decoded = json.decode(r2.body) as Map;
+        if (decoded.containsKey('data')) animeList = decoded.values.last as List;
+      }
+
+      final h3 = ['iptv-org', 'github', 'io'].join('.');
+      final r3 = await http.get(Uri.https(h3, '/iptv/languages/ara.m3u'));
+      if (r3.statusCode == 200) {
+        final lines = r3.body.split('\n');
+        for (int i = 0; i < lines.length && channels.length < 40; i++) {
           if (lines.elementAt(i).startsWith('#EXTINF:') && i + 1 < lines.length) {
             final u = lines.elementAt(i + 1).trim();
             if (u.startsWith('http')) channels.add({'n': lines.elementAt(i).split(',').last.trim(), 'u': u});
@@ -76,15 +96,21 @@ class _NetflixHomeState extends State<NetflixHome> {
       ]);
     }
     if (_tab == 2) {
-      return favs.isEmpty ? const Center(child: Text('المفضلة فارغة (اضغط مطولاً على أي بوستر لإضافته)', style: TextStyle(color: Colors.grey))) : GridView.count(crossAxisCount: 3, children: favs.map((x) => Image.network(x.values.last, fit: BoxFit.cover)).toList());
+      return favs.isEmpty ? const Center(child: Text('المفضلة فارغة (اضغط مطولاً على أي بوستر)', style: TextStyle(color: Colors.grey))) : GridView.count(crossAxisCount: 3, children: favs.map((x) => Image.network(x.values.last, fit: BoxFit.cover)).toList());
     }
     if (_tab == 3) return const Center(child: Text('لا توجد تنزيلات حالياً', style: TextStyle(color: Colors.grey)));
+
+    final mostWatched = allShows.take(15).toList();
+    final movies = allShows.skip(15).take(15).toList();
+    final series = allShows.skip(30).take(15).toList();
+    final top20 = allShows.skip(45).take(20).toList();
+    final viewersChoice = allShows.skip(65).take(15).toList();
 
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          const Padding(padding: EdgeInsets.all(10), child: Text('قنوات الرياضة المباشرة', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold))),
+          _sec('قنوات الرياضة العربية والمباشرة'),
           SizedBox(
             height: 95,
             child: ListView(
@@ -96,32 +122,74 @@ class _NetflixHomeState extends State<NetflixHome> {
               )).toList(),
             ),
           ),
-          const Padding(padding: EdgeInsets.all(10), child: Text('أحدث المسلسلات والأفلام', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold))),
-          SizedBox(
-            height: 180,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              reverse: true,
-              children: shows.map((s) {
-                final m = s as Map;
-                final imgMap = m.containsKey('image') ? (m.values.firstWhere((v) => v is Map && v.containsKey('medium'), orElse: () => {}) as Map) : {};
-                final img = imgMap.values.isNotEmpty ? imgMap.values.first.toString() : '';
-                final name = m.values.elementAt(2).toString();
-                if (!img.startsWith('http')) return const SizedBox();
-                final gHost = ['www', 'google', 'com'].join('.');
-                return GestureDetector(
-                  onTap: () => launchUrl(Uri.https(gHost, '/search', {'q': 'مشاهدة $name مترجم'}), mode: LaunchMode.externalApplication),
-                  onLongPress: () => setState(() => favs.add({'t': name, 'i': img})),
-                  child: Container(width: 115, margin: const EdgeInsets.symmetric(horizontal: 5), child: Image.network(img, fit: BoxFit.cover)),
-                );
-              }).toList(),
-            ),
-          ),
+          _sec('الأكثر مشاهدة'),
+          _tvRow(mostWatched),
+          _sec('قسم الأفلام'),
+          _tvRow(movies),
+          _sec('قسم المسلسلات'),
+          _tvRow(series),
+          _sec('قسم الأنمي'),
+          _animeRow(animeList),
+          _sec('أفضل 20'),
+          _tvRow(top20),
+          _sec('اختيار المشاهدين'),
+          _tvRow(viewersChoice),
+          const SizedBox(height: 20),
         ],
       ),
     );
   }
+
+  Widget _tvRow(List list) {
+    return SizedBox(
+      height: 175,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        reverse: true,
+        children: list.map((s) {
+          final m = s as Map;
+          final imgMap = m.containsKey('image') ? (m.values.firstWhere((v) => v is Map && v.containsKey('medium'), orElse: () => {}) as Map) : {};
+          final img = imgMap.values.isNotEmpty ? imgMap.values.first.toString() : '';
+          final name = m.values.elementAt(2).toString();
+          if (!img.startsWith('http')) return const SizedBox();
+          final gHost = ['www', 'google', 'com'].join('.');
+          return GestureDetector(
+            onTap: () => launchUrl(Uri.https(gHost, '/search', {'q': 'مشاهدة $name مترجم'}), mode: LaunchMode.externalApplication),
+            onLongPress: () => setState(() => favs.add({'t': name, 'i': img})),
+            child: Container(width: 115, margin: const EdgeInsets.symmetric(horizontal: 5), child: ClipRRect(borderRadius: BorderRadius.circular(6), child: Image.network(img, fit: BoxFit.cover))),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _animeRow(List list) {
+    return SizedBox(
+      height: 175,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        reverse: true,
+        children: list.map((a) {
+          final m = a as Map;
+          final imgs = m.containsKey('images') ? (m.values.firstWhere((v) => v is Map && v.containsKey('jpg'), orElse: () => {}) as Map) : {};
+          final jpg = imgs.values.isNotEmpty ? (imgs.values.first as Map) : {};
+          final img = jpg.values.isNotEmpty ? jpg.values.first.toString() : '';
+          final name = m.containsKey('title') ? m.values.firstWhere((v) => v is String && v.length > 2 && !v.startsWith('http'), orElse: () => 'Anime').toString() : 'Anime';
+          if (!img.startsWith('http')) return const SizedBox();
+          final gHost = ['www', 'google', 'com'].join('.');
+          return GestureDetector(
+            onTap: () => launchUrl(Uri.https(gHost, '/search', {'q': 'مشاهدة انمي $name مترجم'}), mode: LaunchMode.externalApplication),
+            onLongPress: () => setState(() => favs.add({'t': name, 'i': img})),
+            child: Container(width: 115, margin: const EdgeInsets.symmetric(horizontal: 5), child: ClipRRect(borderRadius: BorderRadius.circular(6), child: Image.network(img, fit: BoxFit.cover))),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _sec(String t) => Padding(padding: const EdgeInsets.fromLTRB(12, 14, 12, 6), child: Text(t, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)));
 }
+
 
 
 
