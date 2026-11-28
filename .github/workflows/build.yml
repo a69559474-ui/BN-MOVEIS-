@@ -21,6 +21,7 @@ jobs:
           flutter create temp_app --project-name bn_moveis --org com.bn
           cp pubspec.yaml temp_app/pubspec.yaml
           cp -r lib/* temp_app/lib/
+          sed -i 's/<application/<uses-permission android:name="android.permission.INTERNET"\/>\n    <application/' temp_app/android/app/src/main/AndroidManifest.xml
           cd temp_app
           convert -size 512x512 xc:"#000000" -font "DejaVu-Sans-Bold" -fill "#E50914" -gravity center -pointsize 230 -annotate +0-35 "BN" -wave -8x512 -gravity center -fill "#FFFFFF" -pointsize 42 -annotate +0+125 "MOVEIS" logo.png
           flutter pub get
@@ -30,6 +31,7 @@ jobs:
         with:
           name: BN-MOVEIS-APK
           path: temp_app/build/app/outputs/flutter-apk/app-release.apk
+
 
 
 
