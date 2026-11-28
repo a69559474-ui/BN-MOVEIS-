@@ -24,10 +24,16 @@ class _LockScreenState extends State<LockScreen> {
 
   Future<void> _checkSaved() async {
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool('activated') == true) {
-      if (mounted) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const NetflixHome()));
-        return;
+    final savedExpiry = prefs.getString('expiry_date');
+    if (savedExpiry != null) {
+      final expDate = DateTime.tryParse(savedExpiry);
+      if (expDate != null && DateTime.now().isBefore(expDate)) {
+        if (mounted) {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const NetflixHome()));
+          return;
+        }
+      } else {
+        await prefs.remove('expiry_date');
       }
     }
     if (mounted) setState(() => checking = false);
@@ -41,22 +47,35 @@ class _LockScreenState extends State<LockScreen> {
       final url = Uri.parse('https://githubusercontent.com');
       final res = await http.get(url);
       if (res.statusCode == 200) {
-        final validCodes = res.body.split('\n').map((e) => e.trim()).toList();
-        if (validCodes.contains(input)) {
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setBool('activated', true);
-          if (mounted) {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const NetflixHome()));
-            return;
+        final lines = res.body.split('\n');
+        for (var line in lines) {
+          final parts = line.trim().split(':');
+          if (parts.isNotEmpty && parts[0].trim() == input) {
+            final expiryStr = parts.length > 1 ? parts[1].trim() : '2099-12-31';
+            final expDate = DateTime.tryParse(expiryStr);
+            if (expDate != null && DateTime.now().isBefore(expDate)) {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.setString('expiry_date', expiryStr);
+              if (mounted) {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const NetflixHome()));
+                return;
+              }
+            }
           }
         }
       }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('\u0627\u0644\u0643\u0648\u062f \u063a\u064a\u0631 \u0635\u062d\u064a\u062d \u0623\u0648 \u0645\u0633\u062a\u062e\u062f\u0645 \u0645\u0646 \u0642\u0628\u0644'), backgroundColor: Colors.red),
+          const SnackBar(content: Text('\u0627\u0644\u0643\u0648\u062f \u063a\u064a\u0631 \u0635\u062d\u064a\u062d \u0623\u0648 \u0645\u0646\u062a\u0647\u064a \u0627\u0644\u0635\u0644\u0627\u062d\u064a\u0629'), backgroundColor: Colors.red),
         );
       }
-    } catch (_) {}
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('\u062a\u0623\u0643\u062f \u0645\u0646 \u0627\u062a\u0635\u0627\u0644\u0643 \u0628\u0627\u0644\u0625\u0646\u062a\u0631\u0646\u062a'), backgroundColor: Colors.orange),
+        );
+      }
+    }
     if (mounted) setState(() => checking = false);
   }
 
@@ -93,7 +112,7 @@ class _LockScreenState extends State<LockScreen> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE50914)),
                       onPressed: _verify,
-                      child: const Text('\u062a\u0641\u0639\u064a\u0644 \u0627\u0644\u062c\u0647\u0627\u0632', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                      child: const Text('\u062a\u0641\u0639\u064a\u0644 \u0627\u0644\u0627\u0634\u062a\u0631\u0627\u0643', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                     ),
                   ),
                   const SizedBox(height: 25),
