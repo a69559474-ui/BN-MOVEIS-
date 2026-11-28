@@ -50,8 +50,8 @@ class _LockScreenState extends State<LockScreen> {
         final lines = res.body.split('\n');
         for (var line in lines) {
           final parts = line.trim().split(':');
-          if (parts.isNotEmpty && parts[0].trim() == input) {
-            final expiryStr = parts.length > 1 ? parts[1].trim() : '2099-12-31';
+          if (parts.isNotEmpty && parts.trim() == input) {
+            final expiryStr = parts.length > 1 ? parts.trim() : '2099-12-31';
             final expDate = DateTime.tryParse(expiryStr);
             if (expDate != null && DateTime.now().isBefore(expDate)) {
               final prefs = await SharedPreferences.getInstance();
@@ -69,10 +69,10 @@ class _LockScreenState extends State<LockScreen> {
           const SnackBar(content: Text('\u0627\u0644\u0643\u0648\u062f \u063a\u064a\u0631 \u0635\u062d\u064a\u062d \u0623\u0648 \u0645\u0646\u062a\u0647\u064a \u0627\u0644\u0635\u0644\u0627\u062d\u064a\u0629'), backgroundColor: Colors.red),
         );
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('\u062a\u0623\u0643\u062f \u0645\u0646 \u0627\u062a\u0635\u0627\u0644\u0643 \u0628\u0627\u0644\u0625\u0646\u062a\u0631\u0646\u062a'), backgroundColor: Colors.orange),
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.orange),
         );
       }
     }
