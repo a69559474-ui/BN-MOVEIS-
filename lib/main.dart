@@ -44,14 +44,17 @@ class _LockScreenState extends State<LockScreen> {
     if (input.isEmpty) return;
     setState(() => checking = true);
     try {
-      final url = Uri.parse('https://githubusercontent.com');
-      final res = await http.get(url);
+      final link = 'https://' + '://githubusercontent.com';
+      final res = await http.get(Uri.parse(link));
       if (res.statusCode == 200) {
         final lines = res.body.split('\n');
         for (var line in lines) {
-          final parts = line.trim().split(':');
-          if (parts.isNotEmpty && parts[0].trim() == input) {
-            final expiryStr = parts.length > 1 ? parts[1].trim() : '2099-12-31';
+          final cleanLine = line.trim();
+          if (cleanLine.isEmpty) continue;
+          final parts = cleanLine.split(':');
+          final codeStr = parts.first.trim();
+          if (codeStr == input) {
+            final expiryStr = parts.length > 1 ? parts.last.trim() : '2099-12-31';
             final expDate = DateTime.tryParse(expiryStr);
             if (expDate != null && DateTime.now().isBefore(expDate)) {
               final prefs = await SharedPreferences.getInstance();
@@ -127,6 +130,7 @@ class _LockScreenState extends State<LockScreen> {
     );
   }
 }
+
 
 
 
