@@ -50,8 +50,8 @@ class _LockScreenState extends State<LockScreen> {
         final lines = res.body.split('\n');
         for (var line in lines) {
           final parts = line.trim().split(':');
-          if (parts.isNotEmpty && parts.trim() == input) {
-            final expiryStr = parts.length > 1 ? parts.trim() : '2099-12-31';
+          if (parts.isNotEmpty && parts[0].trim() == input) {
+            final expiryStr = parts.length > 1 ? parts[1].trim() : '2099-12-31';
             final expDate = DateTime.tryParse(expiryStr);
             if (expDate != null && DateTime.now().isBefore(expDate)) {
               final prefs = await SharedPreferences.getInstance();
@@ -127,6 +127,7 @@ class _LockScreenState extends State<LockScreen> {
     );
   }
 }
+
 
 
 
