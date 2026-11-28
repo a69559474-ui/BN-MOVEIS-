@@ -1,18 +1,25 @@
 
-plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-}
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-android {
-    namespace = "com.bnmovies.app"
-    compileSdk = 35
+    <application
+        android:allowBackup="true"
+        android:label="BN MOVIES"
+        android:supportsRtl="true"
+        android:theme="@android:style/Theme.Material.NoActionBar">
 
-    defaultConfig {
-        applicationId = "com.bnmovies.app"
-        minSdk = 23
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
-    }
-}
+        <activity
+            android:name="com.bnmovies.app.MainActivity"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+    </application>
+
+</manifest>
+
